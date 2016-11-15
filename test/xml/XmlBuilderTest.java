@@ -47,6 +47,25 @@ public class XmlBuilderTest {
 	}
 	
 	@Test
+	public void leafNodeWithText() throws Exception {
+		String xml = new XmlBuilder("div").
+							withTag("img").withAttribute("aaa", "bbb").
+						parent().
+							withText("ccc").build();
+		
+		assertThat(xml, is("<div><img aaa='bbb'/>ccc</div>"));
+	}
+	
+	@Test
+	public void textWithLeafNode() throws Exception {
+		String xml = new XmlBuilder("div").
+							withText("ccc").
+							withTag("img").withAttribute("aaa", "bbb").build();
+		
+		assertThat(xml, is("<div>ccc<img aaa='bbb'/></div>"));
+	}
+	
+	@Test
 	public void testMultipleAttributes() {
 		String expected = "<a:message attribute:a='http://www.aaa.ch' attribute:b='http://www.bbb.ch' c='111'>" +
 							"<bb:cc attribute='xxx'/>"+
