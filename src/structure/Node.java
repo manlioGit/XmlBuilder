@@ -3,32 +3,41 @@ package structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Node<T> {
 	
 	private T _data;
 	private final Node<T> _parent;
 	private final List<Node<T>> _children;
+	private boolean _leaf;
 
 	public Node(T data) {
-		this(data, null);
+		this(data, null, true);
 	}
 	
-	public Node(T data, Node<T> parent) {
+	public Node(T data, Node<T> parent, boolean leaf) {
 		_data = data;
 		_parent = parent;
 		_children = new ArrayList<Node<T>>();
+		_leaf = leaf;
 	}
 
 	public boolean isLeaf(){
-		return _children.isEmpty();
+		return _leaf;
+	}
+	
+	public void setLeaf(boolean leaf){
+		_leaf = leaf;
 	}
 	
 	public Node<T> addChild(T data){
-		_children.add(new Node<T>(data, this));
+		_children.add(new Node<T>(data, this, true));
 		return this;
 	}
 	
 	public Node<T> add(T data){
+		_leaf = false;
 		return addChild(data).children().get(children().size() - 1);
 	}
 

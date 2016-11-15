@@ -1,8 +1,7 @@
 package xml;
 
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -20,9 +19,37 @@ public class XmlBuilderTest {
 	}
 	
 	@Test
+	public void leafNodeHasNotClosingTag() throws Exception {
+		String xml = new XmlBuilder("div").withTag("br").build();
+		
+		assertThat(xml, is("<div><br/></div>"));
+	}
+	
+	@Test
+	public void rootNodeIsLeaf() throws Exception {
+		String xml = new XmlBuilder("div").build();
+		
+		assertThat(xml, is("<div/>"));
+	}
+	
+	@Test
+	public void leafNodeWithAttributesHasNotClosingTag() throws Exception {
+		String xml = new XmlBuilder("div").withAttribute("aaa", "bbb").build();
+		
+		assertThat(xml, is("<div aaa='bbb'/>"));
+	}
+	
+	@Test
+	public void nodeWithTextIsNotLeaf() throws Exception {
+		String result = new XmlBuilder("div").withAttribute("aaa", "bbb").withText("xyz").build();
+		
+		assertThat(result, is("<div aaa='bbb'>xyz</div>"));
+	}
+	
+	@Test
 	public void testMultipleAttributes() {
 		String expected = "<a:message attribute:a='http://www.aaa.ch' attribute:b='http://www.bbb.ch' c='111'>" +
-							"<bb:cc attribute='xxx'></bb:cc>" +
+							"<bb:cc attribute='xxx'/>"+
 						 "</a:message>";
 		
 		String xml = new XmlBuilder("a:message").
@@ -52,7 +79,7 @@ public class XmlBuilderTest {
 						"<div>some</div>" +
 						"<div>" +
 							"<element>otherValue</element>" +
-							"<br class='.someClass'></br>" +
+							"<br class='.someClass'/>" +
 							"<empty/>" +
 						"</div>" +
 					"</body>" +

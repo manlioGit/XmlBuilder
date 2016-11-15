@@ -41,6 +41,7 @@ public class XmlBuilder {
 	
 	public XmlBuilder withText(String text){
 		_tree.addChild(TEXT_NODE_MARKER + text);
+		_tree.setLeaf(false);
 		return this;
 	}
 	
@@ -93,9 +94,9 @@ public class XmlBuilder {
 				return "";
 			}
 			
-			return "<" + node + "/>"; 
+			return printNode("<", node, "/>");
 		} else {
-			String value = "<" + node + attributesOf(node) + ">";
+			String value = printNode("<", node, ">");
 			for (Node<String> child : node.children()) {
 				value += print(child); 
 			}
@@ -103,6 +104,10 @@ public class XmlBuilder {
 			
 			return value;
 		}
+	}
+	
+	private String printNode(String open, Node<String> node, String close){
+		return open + node + attributesOf(node) + close;
 	}
 
 	private String attributesOf(Node<String> node) {
